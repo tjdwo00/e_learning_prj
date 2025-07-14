@@ -1,0 +1,13 @@
+<div>
+  <h2>🙋 내 정보</h2>
+  <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+    <tr><th>유저 번호</th><td th:text="${myData.userSeq}">user001</td></tr>
+    <tr><th>이메일</th><td th:text="${myData.email}">user@example.com</td></tr>
+    <tr><th>비밀번호</th><td th:text="${myData.password}">****</td></tr>
+    <tr><th>닉네임</th><td th:text="${myData.nickname}">홍길동</td></tr>
+    <tr><th>상태</th><td th:text="${myData.status}">ACTIVE</td></tr>
+    <tr><th>소셜 ID</th><td th:text="${myData.socialId}">abc123</td></tr>
+    <tr><th>소셜 제공자</th><td th:text="${myData.socialProvider}">KAKAO</td></tr>
+    <tr><th>프로필</th><td th:text="${myData.profile}">/images/profile.jpg</td></tr>
+  </table>
+</div>

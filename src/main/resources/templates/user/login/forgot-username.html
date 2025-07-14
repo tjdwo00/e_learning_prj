@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>닉네임 찾기</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f5f5f5;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .header {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .forgot-password-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            padding: 60px 40px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .forgot-password-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .forgot-password-description {
+            color: #666;
+            font-size: 16px;
+            line-height: 1.5;
+            margin-bottom: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+            background-color: #f8f9fa;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #1DA1F2;
+            box-shadow: 0 0 0 3px rgba(29, 161, 242, 0.1);
+            background-color: white;
+        }
+
+        .submit-button {
+            width: 100%;
+            padding: 15px;
+            background: #1DA1F2;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .submit-button:hover {
+            background: #1991DB;
+        }
+
+        .submit-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .back-link {
+            color: #666;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: #1DA1F2;
+        }
+
+        .success-message {
+            color: #28a745;
+            font-size: 14px;
+            margin-top: 15px;
+            padding: 12px;
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 6px;
+            display: none;
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 15px;
+            padding: 12px;
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 6px;
+            display: none;
+        }
+
+        .message.show {
+            display: block;
+        }
+
+        .loading {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .loading.show {
+            display: flex;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #1DA1F2;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .username-result {
+            margin-top: 20px;
+            padding: 20px;
+            background: #e8f5e8;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .username-result.show {
+            display: block;
+        }
+
+        .username-result h3 {
+            color: #28a745;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .username-display {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            margin-bottom: 15px;
+        }
+
+        .username-info {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 480px) {
+            .forgot-password-container {
+                padding: 40px 20px;
+                margin: 20px;
+            }
+            
+            .forgot-password-title {
+                font-size: 20px;
+            }
+            
+            .forgot-password-description {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        닉네임 찾기
+    </div>
+
+    <div class="forgot-password-container">
+        <div id="forgot-form">
+            <h1 class="forgot-password-title">닉네임을 잊으셨나요?</h1>
+            <p class="forgot-password-description">
+                가입 시 사용한 이메일 주소를 입력하시면<br>
+                등록된 닉네임을 확인하실 수 있습니다.
+            </p>
+            
+            <form id="usernameForm">
+                <div class="form-group">
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email"
+                        class="form-control" 
+                        placeholder="이메일 주소를 입력하세요"
+                        required
+                    >
+                </div>
+                
+                <button type="submit" class="submit-button" id="submit-btn">
+                    닉네임 찾기
+                </button>
+                
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <span>닉네임을 찾고 있습니다...</span>
+                </div>
+                
+                <div class="error-message message" id="error-message">
+                    이메일 주소를 확인해주세요.
+                </div>
+                
+                <div class="success-message message" id="success-message">
+                    닉네임을 찾았습니다!
+                </div>
+            </form>
+            
+            <div class="username-result" id="username-result">
+                <h3>🎉 등록된 닉네임</h3>
+                <div class="username-display" id="username-display">
+                    <!-- 닉네임이 여기에 표시됩니다 -->
+                </div>
+                <div class="username-info">
+                    위 닉네임으로 로그인하실 수 있습니다.<br>
+                    비밀번호를 잊으셨다면 비밀번호 찾기를 이용해주세요.
+                </div>
+            </div>
+            
+            <a href="#" onclick="goToLogin()" class="back-link">
+                ← 로그인으로 돌아가기
+            </a>
+        </div>
+    </div>
+
+    <script>
+    // 폼 제출 처리
+    document.getElementById('usernameForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const email = document.getElementById('email').value;
+        const submitBtn = document.getElementById('submit-btn');
+        const loading = document.getElementById('loading');
+
+        if (!email) {
+            showError('이메일 주소를 입력해주세요.');
+            return;
+        }
+
+        if (!isValidEmail(email)) {
+            showError('올바른 이메일 주소를 입력해주세요.');
+            return;
+        }
+
+        // 로딩 상태 표시
+        submitBtn.disabled = true;
+        loading.classList.add('show');
+        hideMessages();
+        hideUsernameResult();
+
+        // 닉네임 찾기 요청
+        fetch("/api/auth/nickname/find", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ email })
+        })
+        .then(response => response.json().then(data => ({ ok: response.ok, data })))
+        .then(({ ok, data }) => {
+            submitBtn.disabled = false;
+            loading.classList.remove('show');
+
+            if (ok && data.success) {
+                showUsernameResult(data.data);
+                showSuccess(data.message || "닉네임을 찾았습니다!");
+            } else {
+                showError(data.message || "닉네임 찾기에 실패했습니다.");
+              
+            }
+        })
+        .catch(error => {
+            submitBtn.disabled = false;
+            loading.classList.remove('show');
+            showError("요청 중 오류가 발생했습니다. 네트워크 연결을 확인해주세요.");
+            console.error('Fetch Error:', error);
+        });
+    });
+
+    // 이메일 유효성 검사
+    function isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
+
+    // 닉네임 결과 표시
+    function showUsernameResult(username) {
+        const usernameDisplay = document.getElementById('username-display');
+        const usernameResult = document.getElementById('username-result');
+
+        usernameDisplay.textContent = username;
+        usernameResult.classList.add('show');
+    }
+
+    function hideUsernameResult() {
+        document.getElementById('username-result').classList.remove('show');
+    }
+
+    function showError(message) {
+        const errorDiv = document.getElementById('error-message');
+        errorDiv.textContent = message;
+        errorDiv.classList.add('show');
+        hideSuccess();
+    }
+
+    function showSuccess(message) {
+        const successDiv = document.getElementById('success-message');
+        successDiv.textContent = message;
+        successDiv.classList.add('show');
+        hideError();
+    }
+
+    function hideMessages() {
+        document.getElementById('error-message').classList.remove('show');
+        document.getElementById('success-message').classList.remove('show');
+    }
+
+    function hideError() {
+        document.getElementById('error-message').classList.remove('show');
+    }
+
+    function hideSuccess() {
+        document.getElementById('success-message').classList.remove('show');
+    }
+
+    function goToLogin() {
+        location.href = "user/login";
+    }
+
+    document.getElementById('email').addEventListener('focus', function() {
+        hideMessages();
+    });
+
+    document.getElementById('email').addEventListener('input', function() {
+        const email = this.value;
+        if (email && !isValidEmail(email)) {
+            this.style.borderColor = '#dc3545';
+        } else {
+            this.style.borderColor = '#ddd';
+        }
+
+        hideUsernameResult();
+        hideMessages();
+    });
+</script>
+    
+</body>
+</html>

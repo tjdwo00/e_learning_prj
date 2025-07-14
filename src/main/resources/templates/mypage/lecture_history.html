@@ -1,0 +1,22 @@
+<div th:fragment="lecture_history">
+  <h2 class="title">📚 수강 내역</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>강의 제목</th>
+        <th>영상 제목</th>
+        <th>수료일</th>
+        <th>완료 여부</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr th:each="lecture : ${lectureList}">
+        <td th:text="${lecture.courseTitle}">강의 제목</td>
+        <td th:text="${lecture.videoTitle}">영상 제목</td>
+        <td th:text="${lecture.uploadDate}">2025-07-01</td>
+        <td th:text="${lecture.completedYn == 'Y' ? '완료' : '미완료'}">완료 여부</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
